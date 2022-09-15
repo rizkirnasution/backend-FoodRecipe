@@ -98,14 +98,14 @@ module.exports = {
 
       if (!addedRefreshToken) throw new createErrors.NotAcceptable('Failed to adding refresh token!')
 
-      const userCurrentRecipes = await knex.select('*').from('recipes')
-        .leftJoin('users', 'recipes.creator_id', 'users.id')
-        .leftJoin('likers', 'recipes.liker_id', 'likers.id')
-        .leftJoin('conservators', 'recipes.conservator_id', 'conservators.id')
-        .leftJoin('videos', 'recipes.video_id', 'videos.id')
-        .where('recipes.creator_id', user.id)
+      const selectedColumnUserRecipes = [
+        'R.id', 'R.title', 'R.ingredient', 'R.created_at', 'R.updated_at',
+        'V.id as video.id', 'V.title as video.title', 'V.url as video.url'
+      ]
 
-      console.log('resepnya', userCurrentRecipes)
+      const userCurrentRecipes = await knex.select(selectedColumnUserRecipes).from('recipes as R')
+        .innerJoin('videos as V', 'V.id', 'R.video_id')
+        .where('R.creator_id', user.id)
 
       delete user.refresh_token
 
