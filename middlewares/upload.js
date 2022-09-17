@@ -8,7 +8,7 @@ const { MAX_FILE_SIZE } = process.env
 const multerStorage = multer({
   storage: multer.diskStorage({}),
   fileFilter: (_req, file, cb) => {
-    const filetypes = /jpg|jpeg|png|svg|gif|webp$i/
+    const filetypes = /jpg|jpeg|png|svg|gif|webp|mp4|webm|mkv$i/
     const extname = filetypes.test(
       path.extname(file.originalname).toLowerCase()
     )
@@ -29,8 +29,12 @@ module.exports = {
   multerHandler: (req, res, next) => {
     const upload = multerStorage.fields([
       {
-        name: 'thumbnail',
+        name: 'picture',
         maxCount: 1
+      },
+      {
+        name: 'video',
+        maxCount: 5
       }
     ])
 

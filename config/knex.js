@@ -17,10 +17,6 @@ const knex = require('knex')({
     password: PGPASSWORD,
     database: PGDATABASE
   },
-  pool: {
-    min: 0,
-    max: 7
-  },
   debug: NODE_ENV === 'development'
 })
 

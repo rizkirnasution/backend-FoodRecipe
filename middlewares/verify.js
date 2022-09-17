@@ -32,7 +32,7 @@ module.exports = {
                 message: err.message || err
               })
             } else {
-              const user = await knex.select('role', 'email').from('users').where('email', result.email).first()
+              const user = await knex.select('id', 'role', 'email').from('users').where('email', result.email).first()
 
               if (!user) throw new createErrors.Unauthorized('Access denied, account unregistered!')
 

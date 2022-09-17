@@ -7,4 +7,5 @@ extends:
   - standard
 parserOptions:
   ecmaVersion: latest
-rules: {}
+rules:
+  camelcase: off
