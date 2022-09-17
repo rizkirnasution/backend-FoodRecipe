@@ -16,6 +16,7 @@ const selectedColumnUserRecipes = {
   creator_email: 'users.email',
   creator_name: 'users.name',
   creator_picture: 'users.picture',
+  creator_phone: 'users.phone',
   created_at: 'recipes.created_at',
   updated_at: 'recipes.updated_at'
 }

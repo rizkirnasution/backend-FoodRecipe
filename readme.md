@@ -1,13 +1,11 @@
 ![backend-FoodRecipe](https://socialify.git.ci/rizkirnasution/backend-FoodRecipe/image?description=1&font=KoHo&forks=1&issues=1&language=1&name=1&owner=1&pattern=Signal&pulls=1&stargazers=1&theme=Light)
 
-<p align="center"> <a href="https://chlasswg26.github.io/chlasswg26/" target="_blank"><img alt="" src="https://img.shields.io/badge/Website-EA4C89?style=normal&logo=dribbble&logoColor=white" style="vertical-align:center" /></a> <a href="https://www.facebook.com/jr.woles/" target="_blank"><img alt="" src="https://img.shields.io/badge/Facebook-1877F2?style=normal&logo=facebook&logoColor=white" style="vertical-align:center" /></a> <a href="https://www.instagram.com/ichlaswardy/" target="_blank"><img alt="" src="https://img.shields.io/badge/Instagram-E4405F?style=normal&logo=instagram&logoColor=white" style="vertical-align:center" /></a> <a href="https://www.linkedin.com/in/ichlas-wardy/}" target="_blank"><img alt="" src="https://img.shields.io/badge/LinkedIn-0077B5?style=normal&logo=linkedin&logoColor=white" style="vertical-align:center" /></a> </p>
 
+> Simplified backend for recipes apps
 
-> Simplified backend for e-commerce apps
+### 🏠 [Homepage](https://github.com/rizkirnasution/backend-FoodRecipe)
 
-### 🏠 [Homepage](https://github.com/chlasswg26/tokopaedi-backend)
-
-### ✨ [Demo](https://tokopaedi.up.railway.app/api/v1)
+### ✨ [Demo](https://food-recipe-production.up.railway.app/api/v1)
 
 ---
 
@@ -48,23 +46,10 @@
 - [cookie-parser](https://ghub.io/cookie-parser): Parse HTTP request cookies
 - [cors](https://ghub.io/cors): Node.js CORS middleware
 - [cross-env](https://ghub.io/cross-env): Run scripts that set and use environment variables across platforms
+- [cross-fetch](https://ghub.io/cross-fetch): Universal WHATWG Fetch API for Node, Browsers and React Native
 - [dotenv](https://ghub.io/dotenv): Loads environment variables from .env file
 - [duration-js](https://ghub.io/duration-js): small simple library for dealing with durations
 - [express](https://ghub.io/express): Fast, unopinionated, minimalist web framework
-- [express-validator](https://ghub.io/express-validator): Express middleware for the validator module.
-- [global](https://ghub.io/global): Require global variables
-- [helmet](https://ghub.io/helmet): help secure Express/Connect apps with various HTTP headers
-- [http-errors](https://ghub.io/http-errors): Create HTTP error objects
-- [jsonwebtoken](https://ghub.io/jsonwebtoken): JSON Web Token implementation (symmetric and asymmetric)
-- [morgan](https://ghub.io/morgan): HTTP request logger middleware for node.js
-- [multer](https://ghub.io/multer): Middleware for handling `multipart/form-data`.
-- [nodemailer](https://ghub.io/nodemailer): Easy as cake e-mail sending from your Node.js applications
-- [nodemon](https://ghub.io/nodemon): Simple monitor script for use during development of a Node.js app.
-- [pg](https://ghub.io/pg): PostgreSQL client - pure javascript &amp; libpq with the same API
-- [redis](https://ghub.io/redis): A modern, high performance Redis client
-- [serve-favicon](https://ghub.io/serve-favicon): favicon serving middleware with caching
-- [string-crypto](https://ghub.io/string-crypto): Small and simple (yet secure) library to encrypt and decrypt strings using PBKDF2 for key derivation and AES (defaulted to 256-bit / SHA512)
-- [xss-clean](https://ghub.io/xss-clean): middleware to sanitize user input
 
 
 ## Dev Dependencies
@@ -112,7 +97,7 @@
 
 | Endpoint Development | Endpoint Production |
 | :------: | :------: |
-| `https://localhost:8080/api/v1` | `https://tokopaedi.up.railway.app/api/v1` |
+| `https://localhost:8080/api/v1` | `https://food-recipe-production.up.railway.app/api/v1` |
 
 
 ### AUTHENTICATION
@@ -128,7 +113,7 @@
 | `email` | `string` | **Required**. Email of new user to verification |
 | `password` | `string` | **Required**. Password of new user to sign in |
 | `picture` | `file` | **Optional**. Picture of new user |
-| `role` | `string` | **Required**. Role of new user to authorization |
+| `role` | `string` | **Optional**. Role of new user to authorization, default is (User) |
 
 #### Get verification account by code
 
@@ -174,80 +159,23 @@
 | `-` | `-` | - |
 
 
-### USERS
-#### Get all users
+### Profile
+#### Edit existing user profiles
 
 ```http
-  GET /api/v1/users
+  PUT /api/v1/profile
 ```
 
 ****INCLUDE BEARER TOKEN!****
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `search` | `string` | **Optional**. Keyword to search users |
-| `page` | `integer` | **Optional**. Current page of users |
-| `limit` | `integer` | **Optional**. Limit data of users to show |
-| `orderBy` | `string` | **Optional**. Ordering data by key name |
-| `sortBy` | `string` | **Optional**. Sorting data by ASCENDING or DESCENDING (ASC / DESC) |
-
-#### Get user by id
-
-```http
-  GET /api/v1/users/:id
-```
-
-****INCLUDE BEARER TOKEN!****
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of user to fetch |
-
-#### Post new user data
-
-```http
-  POST /api/v1/users
-```
-
-****INCLUDE BEARER TOKEN!****
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `name` | `string` | **Required**. Name of new user to insert |
-| `email` | `string` | **Required**. Email of new user to insert |
-| `password` | `string` | **Required**. Password of new user to insert |
-| `picture` | `file` | **Optional**. Picture of new user |
-| `role` | `string` | **Required**. Role of new user to insert |
-
-#### Put existing user data
-
-```http
-  PUT /api/v1/users/:id
-```
-
-****INCLUDE BEARER TOKEN!****
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
 | `id` | `integer` | **Required**. Id of user to update |
 | `name` | `string` | **Optional**. New name of existing user to update |
 | `email` | `string` | **Optional**. New email of existing user to update |
 | `password` | `string` | **Optional**. New password of existing user to update |
 | `picture` | `file` | **Optional**. New picture of existing user to update |
 | `role` | `string` | **Optional**. New role of existing user to update |
-
-#### Delete existing user data
-
-```http
-  DELETE /api/v1/users/:id
-```
-
-****INCLUDE BEARER TOKEN!****
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of user to delete |
-
 
 ### CATEGORIES
 #### Get all categories
@@ -258,64 +186,13 @@
 
 | Parameter | Type     | Description                |
 | :-------- | :------- | :------------------------- |
-| `search` | `string` | **Optional**. Keyword to search categories |
-| `page` | `integer` | **Optional**. Current page of categories |
-| `limit` | `integer` | **Optional**. Limit data of categories to show |
-| `orderBy` | `string` | **Optional**. Ordering data by key name |
-| `sortBy` | `string` | **Optional**. Sorting data by ASCENDING or DESCENDING (ASC / DESC) |
+| - | - | - |
 
-#### Get category by id
+### RECIPES
+#### Get all recipes
 
 ```http
-  GET /api/v1/categories/:id
-```
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of category to fetch |
-
-#### Post new category data
-
-```http
-  POST /api/v1/categories
-```
-
-****INCLUDE BEARER TOKEN!****
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `name` | `string` | **Required**. Name of new category to insert |
-
-#### Put existing category data
-
-```http
-  PUT /api/v1/categories/:id
-```
-
-****INCLUDE BEARER TOKEN!****
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of category to update |
-| `name` | `string` | **Required**. New name of existing category to update |
-
-#### Delete existing category data
-
-```http
-  DELETE /api/v1/categories/:id
-```
-
-****INCLUDE BEARER TOKEN!****
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of category to delete |
-
-### PRODUCTS
-#### Get all products
-
-```http
-  GET /api/v1/products
+  GET /api/v1/recipe
 ```
 
 | Parameter | Type     | Description                |
@@ -326,136 +203,105 @@
 | `orderBy` | `string` | **Optional**. Ordering data by key name |
 | `sortBy` | `string` | **Optional**. Sorting data by ASCENDING or DESCENDING (ASC / DESC) |
 
-#### Get product by id
+#### Get recipe by id
 
 ```http
-  GET /api/v1/products/:id
+  GET /api/v1/recipe/:id
 ```
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of product to fetch |
+| `id` | `integer` | **Required**. Id of recipe to fetch |
 
-#### Post new product data
+#### Post new recipe data
 
 ```http
-  POST /api/v1/products
+  POST /api/v1/recipe
 ```
 
 ****INCLUDE BEARER TOKEN!****
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `title` | `string` | **Required**. Title of new product to insert |
-| `description` | `string` | **Required**. Description of new product to insert |
-| `price` | `integer` | **Required**. Price of new product to insert |
-| `thumbnail` | `file` | **Optional**. Thumbnail of new product |
-| `seller_id` | `integer` | **Required**. Seller ID of new product to constraint |
-| `category_id` | `integer` | **Required**. Category ID of new product to constraint |
+| `title` | `string` | **Required**. Title of new recipe to insert |
+| `ingredient` | `string` | **Required**. Ingredient of new recipe to insert |
+| `category` | `string` | **Required**. Category of new recipe to insert |
+| `picture` | `file` | **Required**. Thumbnail of new recipe |
+| `video` | `file` OR `[arr of files]` | **Required**. Videos of new recipe |
 
-#### Put existing product data
+#### Put existing recipe data
 
 ```http
-  PUT /api/v1/products/:id
+  PUT /api/v1/recipe/:id
 ```
 
 ****INCLUDE BEARER TOKEN!****
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of product to update |
-| `title` | `string` | **Optional**. New title of existing product to update |
-| `description` | `string` | **Optional**. New description of existing product to update |
-| `price` | `integer` | **Optional**. New price of existing product to update |
-| `thumbnail` | `file` | **Optional**. New thumbnail of existing product to update |
-| `seller_id` | `integer` | **Optional**. New seller ID of existing product to constraint |
-| `category_id` | `integer` | **Optional**. New sategory ID of existing product to constraint |
+| `id` | `integer` | **Required**. Id of recipe to update |
+| `title` | `string` | **Optional**. New title of existing recipe to update |
+| `ingredient` | `string` | **Optional**. New ingredient of existing recipe to update |
+| `category` | `string` | **Optional**. New category of existing recipe to update |
+| `picture` | `file` | **Optional**. New thumbnail of existing recipe to update |
+| `video` | `file` OR `[arr of files]` | **Optional**. New videos of existing recipe to update |
 
-#### Delete existing product data
+#### Delete existing recipe data
 
 ```http
-  DELETE /api/v1/products/:id
+  DELETE /api/v1/recipe/:id
 ```
 
 ****INCLUDE BEARER TOKEN!****
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of product to delete |
+| `id` | `integer` | **Required**. Id of recipe to delete |
 
-### TRANSACTIONS
-#### Get all transactions
+### VIDEOS
 
-```http
-  GET /api/v1/transactions
-```
-
-****INCLUDE BEARER TOKEN!****
-
-| Parameter | Type     | Description                |
-| :-------- | :------- | :------------------------- |
-| `search` | `string` | **Optional**. Keyword to search transactions |
-| `page` | `integer` | **Optional**. Current page of transactions |
-| `limit` | `integer` | **Optional**. Limit data of transactions to show |
-| `orderBy` | `string` | **Optional**. Ordering data by key name |
-| `sortBy` | `string` | **Optional**. Sorting data by ASCENDING or DESCENDING (ASC / DESC) |
-
-#### Get transaction by id
+#### Post new videos data
 
 ```http
-  GET /api/v1/transactions/:id
+  POST /api/v1/video
 ```
 
 ****INCLUDE BEARER TOKEN!****
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of transaction to fetch |
+| `title` | `string` | **Required**. Title of new video to insert |
+| `picture` | `file` | **Required**. Thumbnail of new video |
+| `video` | `file` | **Required**. URL of new video |
+| `recipe_id` | `number` | **Required**. Recipe ID of new video |
 
-#### Post new transaction data
+#### Put existing video data
 
 ```http
-  POST /api/v1/transactions
+  PUT /api/v1/video/:id
 ```
 
 ****INCLUDE BEARER TOKEN!****
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `buyer_id` | `integer` | **Required**. Buyer ID of new transaction to constraint |
-| `product_id` | `integer` | **Required**. Product ID of new transaction to constraint |
-| `quantity` | `integer` | **Required**. Quantity of new transaction to insert |
-| `price` | `integer` | **Required**. Price of new transaction to insert |
-| `status` | `string` | **Optional**. Status of new transaction to insert (pending, success, failed) |
+| `id` | `integer` | **Required**. Id of video to update |
+| `title` | `string` | **Optional**. New title of existing video to update |
+| `picture` | `file` | **Optional**. New thumbnail of existing video to update |
+| `video` | `file` | **Optional**. New URL of existing video to update |
+| `recipe_id` | `number` | **Optional**. New Recipe ID of existing video to update |
 
-#### Put existing transaction data
+#### Delete existing video data
 
 ```http
-  PUT /api/v1/transactions/:id
+  DELETE /api/v1/video/:id
 ```
 
 ****INCLUDE BEARER TOKEN!****
 
 | Parameter | Type     | Description                       |
 | :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of transaction to update |
-| `buyer_id` | `integer` | **Optional**. New buyer ID of existing transaction to constraint |
-| `product_id` | `integer` | **Optional**. New product ID of existing transaction to constraint |
-| `quantity` | `integer` | **Optional**. New quantity of existing transaction to update |
-| `price` | `integer` | **Optional**. New price of existing transaction to update |
-| `status` | `string` | **Optional**. New status of existing transaction to update (pending, success, failed) |
-
-#### Delete existing transaction data
-
-```http
-  DELETE /api/v1/transactions/:id
-```
-
-****INCLUDE BEARER TOKEN!****
-
-| Parameter | Type     | Description                       |
-| :-------- | :------- | :-------------------------------- |
-| `id` | `integer` | **Required**. Id of transaction to delete |
+| `id` | `integer` | **Required**. Id of video to delete |
 
 ---
 
@@ -473,13 +319,13 @@ command line tools.
 Clone the project
 
 ```bash
-  git clone https://github.com/chlasswg26/tokopaedi-backend
+  git clone https://github.com/rizkirnasution/backend-FoodRecipe backend-foodrecipe
 ```
 
 Go to the project directory
 
 ```bash
-  cd tokopaedi-backend
+  cd backend-foodrecipe
 ```
 
 Rename environment files `.env.example` to `.env` and filled up the environment variables
@@ -515,16 +361,6 @@ Start the server
  
  ---
  
-# Author
-
-👤 **Ichlas Wardy Gustama <ichlaswardy26@gmail.com>**
-
-* Website: https://chlasswg26.github.io/chlasswg26
-* Github: [@chlasswg26](https://github.com/chlasswg26)
-* LinkedIn: [@ichlas-wardy](https://linkedin.com/in/ichlas-wardy)
- 
- ---
- 
 # Show your support
 
 Give a ⭐️ if this project helped you!
@@ -533,6 +369,6 @@ Give a ⭐️ if this project helped you!
  
 # 📝 License
 
-Copyright © 2022 [Ichlas Wardy Gustama <ichlaswardy26@gmail.com>](https://github.com/chlasswg26).
+Copyright © 2022.
 
 This project is [MIT](https://choosealicense.com/licenses/mit/) licensed.
