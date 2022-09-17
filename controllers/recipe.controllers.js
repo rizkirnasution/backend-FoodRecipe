@@ -35,6 +35,7 @@ module.exports = {
             .orWhereILike('recipes.category', `%${queryParams.search}%`)
             .orWhereILike('videos.title', `%${queryParams.search}%`)
             .orWhereILike('users.name', `%${queryParams.search}%`)
+            .orWhereILike('users.phone', `%${queryParams.search}%`)
             .orderBy(`${queryParams?.orderBy ? `recipes.${queryParams?.orderBy}` : 'recipes.id'}`, `${queryParams?.sortBy || 'desc'}`)
             .limit(`${parseInt(queryParams?.limit) || 'NULL'}`)
             .offset(`${Math.max(((parseInt(queryParams?.limit) || 10) * (parseInt(queryParams?.page) || 0)) - (parseInt(queryParams?.limit) || 10), 0)}`)
@@ -69,6 +70,7 @@ module.exports = {
           email: value.creator_email,
           name: value.creator_name,
           picture: value.creator_picture,
+          phone: value.creator_phone,
           creator_id: value.recipe_creator_id
         })
 
@@ -193,7 +195,8 @@ module.exports = {
           id: value.creator_id,
           email: value.creator_email,
           name: value.creator_name,
-          picture: value.creator_picture
+          picture: value.creator_picture,
+          phone: value.creator_phone
         }
 
         return value
@@ -336,11 +339,14 @@ module.exports = {
       const params = req.params
       const paramsLength = Object.keys(params).length
       const data = req.body
+      const bodyLength = Object.keys(data).length
       const file = req.files?.picture || {}
       const user = req.userData
       const recipe = req.recipeData
 
       if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
 
       if (user.id !== recipe.creator) throw new createErrors.UnavailableForLegalReasons('You\'re not the creator of this recipe!')
 

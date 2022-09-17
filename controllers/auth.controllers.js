@@ -33,13 +33,15 @@ module.exports = {
           name: data.name,
           email: data.email,
           password: hashPassword,
+          phone: data.phone,
           role: data.role
         }).returning('name')
       } else {
         result = await knex('users').insert({
           name: data.name,
           email: data.email,
-          password: hashPassword
+          password: hashPassword,
+          phone: data.phone
         }).returning('name')
       }
 

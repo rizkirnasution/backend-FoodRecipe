@@ -19,6 +19,7 @@ Route
     check('password').escape().trim().notEmpty().withMessage('Password Can\'t be empty').bail().isLength({
       min: 8
     }).withMessage('Password too short, min 8 character'),
+    check('phone').escape().trim().default('-'),
     check('role').optional({
       nullable: true,
       checkFalsy: true
