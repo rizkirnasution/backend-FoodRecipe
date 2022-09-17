@@ -7,7 +7,7 @@ const {
   loginControllers,
   refreshTokenControllers,
   logoutControllers
-} = require('../controllers/auth')
+} = require('../controllers/auth.controllers')
 const { verifyToken, verifyRefreshToken } = require('../middlewares/verify')
 const { multerHandler } = require('../middlewares/upload')
 const validate = require('../middlewares/validation')

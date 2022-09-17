@@ -98,21 +98,11 @@ module.exports = {
 
       if (!addedRefreshToken) throw new createErrors.NotAcceptable('Failed to adding refresh token!')
 
-      const selectedColumnUserRecipes = [
-        'R.id', 'R.title', 'R.ingredient', 'R.created_at', 'R.updated_at',
-        'V.id as video.id', 'V.title as video.title', 'V.url as video.url'
-      ]
-
-      const userCurrentRecipes = await knex.select(selectedColumnUserRecipes).from('recipes as R')
-        .innerJoin('videos as V', 'V.id', 'R.video_id')
-        .where('R.creator_id', user.id)
-
       delete user.refresh_token
 
       const users = {
         ...user,
-        accessToken,
-        recipes: userCurrentRecipes
+        accessToken
       }
 
       return response(res, 202, users)
@@ -149,8 +139,6 @@ module.exports = {
     try {
       const user = req.userData
 
-      console.log(user)
-
       if (!user) throw new createErrors.NotExtended('Session not found!')
 
       const removeRefreshToken = await knex('users').where('email', user.email).update('refresh_token', '').returning('name')
@@ -159,9 +147,9 @@ module.exports = {
 
       res.clearCookie('token')
 
-      return response(res, 200, {
-        message: 'Successfully log out'
-      })
+      const message = { message: 'Successfully log out' }
+
+      return response(res, 200, message)
     } catch (error) {
       return response(res, error.status || 500, {
         message: error.message || error
