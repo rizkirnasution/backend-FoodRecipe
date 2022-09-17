@@ -1,9 +1,10 @@
 const express = require('express')
 const Route = express.Router()
-const { check } = require('express-validator')
+const { check, param } = require('express-validator')
 
 const {
   registerControllers,
+  verificationControllers,
   loginControllers,
   refreshTokenControllers,
   logoutControllers
@@ -25,6 +26,9 @@ Route
       checkFalsy: true
     }).escape().trim().isIn(['user', 'creator']).withMessage('Invalid role!')
   ]), registerControllers)
+  .get('/verification/:code', validate([
+    param('code').escape().trim().notEmpty().withMessage('Verification Code can\'t be empty').bail().isString().withMessage('Verification code must be string/random text')
+  ]), verificationControllers)
   .post('/login', validate([
     check('email').escape().trim().notEmpty().withMessage('E-mail Can\'t be empty').bail().isEmail().withMessage('E-mail bad format'),
     check('password').escape().trim().notEmpty().withMessage('Password Can\'t be empty').bail().isLength({

@@ -10,10 +10,15 @@ const {
   JWT_REFRESH_SECRET_KEY,
   JWT_REFRESH_TOKEN_LIFE,
   JWT_ALGORITHM,
+  FRONTEND_URL,
   NODE_ENV
 } = process.env
-const { encrypt } = require('../helpers/cryptography')
+const { encrypt, legacyEncrypt, legacyDecrypt } = require('../helpers/cryptography')
 const knex = require('../config/knex')
+const sendMail = require('../helpers/mailer')
+const registrationEmailTemplate = require('../templates/registration.template')
+const { random } = require('../helpers/common')
+const verificationEmailTemplate = require('../templates/verify.template')
 
 module.exports = {
   registerControllers: async (req, res) => {
@@ -24,9 +29,12 @@ module.exports = {
       let result = ''
 
       if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
+
       if (user) throw new createErrors.Conflict('Account has been registered!')
 
       const hashPassword = await argon2.hash(data.password, { type: argon2.argon2id })
+      const randomCode = random(12)
+      const encryptRandomCode = legacyEncrypt(randomCode)
 
       if (data?.role) {
         result = await knex('users').insert({
@@ -34,24 +42,63 @@ module.exports = {
           email: data.email,
           password: hashPassword,
           phone: data.phone,
-          role: data.role
+          role: data.role,
+          verification_code: randomCode
         }).returning('name')
       } else {
         result = await knex('users').insert({
           name: data.name,
           email: data.email,
           password: hashPassword,
-          phone: data.phone
+          phone: data.phone,
+          verification_code: randomCode
         }).returning('name')
       }
 
       if (!result) throw new createErrors.NotImplemented('Registration failed!')
 
+      await sendMail(
+        data.email,
+        'Verify your account',
+        registrationEmailTemplate(req, encryptRandomCode)
+      )
+
       result = {
-        message: `${result[0].name} successfully registered!`
+        message: `Register new account: ${result[0].name}, to continue please verify you're email address first!`
       }
 
       return response(res, 201, result)
+    } catch (error) {
+      return response(res, error.status || 500, {
+        message: error.message || error
+      })
+    }
+  },
+  verificationControllers: async (req, res) => {
+    try {
+      const params = req.params
+      const paramsLength = Object.keys(params).length
+
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+
+      const decryptVerificationCode = legacyDecrypt(params.code)
+      const user = await knex.select('*').from('users').where('verification_code', decryptVerificationCode).first()
+
+      if (!user) throw new createErrors.NotAcceptable('Verification code is not valid!')
+
+      const id = user.id
+      const result = await knex('users').where('id', id).update('verification_code', '').returning('name')
+
+      if (!result) throw new createErrors.NotImplemented('Verification failed!')
+
+      await sendMail(
+        user.email,
+        'Account verified',
+        verificationEmailTemplate(req)
+      )
+
+      res.writeHead(302, { Location: FRONTEND_URL })
+      res.end()
     } catch (error) {
       return response(res, error.status || 500, {
         message: error.message || error
@@ -68,6 +115,7 @@ module.exports = {
       if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
       if (!user) throw new createErrors.ExpectationFailed('Unregistered account!')
       if (sessionToken) throw new createErrors.UnprocessableEntity('Session still active, you need to log out!')
+      if (user?.verification_code) throw new createErrors.UnprocessableEntity('Account need to verification!')
 
       const verifyPassword = await argon2.verify(user.password, data.password)
 
@@ -101,6 +149,7 @@ module.exports = {
       if (!addedRefreshToken) throw new createErrors.NotAcceptable('Failed to adding refresh token!')
 
       delete user.refresh_token
+      delete user?.verification_code
 
       const users = {
         ...user,

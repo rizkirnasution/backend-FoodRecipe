@@ -7,6 +7,7 @@ CREATE TABLE users (
 	phone VARCHAR(25),
 	role TEXT NOT NULL DEFAULT 'user',
 	refresh_token TEXT DEFAULT '',
+	verification_code TEXT DEFAULT '',
 	created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
 	CHECK(role IN ('user', 'creator')),
