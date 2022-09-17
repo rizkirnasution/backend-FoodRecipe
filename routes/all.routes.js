@@ -6,6 +6,8 @@ const categoryRoutes = require('./category.routes')
 const recipeRoutes = require('./recipe.routes')
 const videoRoutes = require('./video.routes')
 const profileRoutes = require('./profile.routes')
+const likerRoutes = require('./liker.routes')
+const bookmarkerRoutes = require('./bookmarker.routes')
 
 Route
   .use('/auth', authRoutes)
@@ -13,5 +15,7 @@ Route
   .use('/recipe', recipeRoutes)
   .use('/video', videoRoutes)
   .use('/profile', profileRoutes)
+  .use('/liker', likerRoutes)
+  .use('/bookmark', bookmarkerRoutes)
 
 module.exports = Route

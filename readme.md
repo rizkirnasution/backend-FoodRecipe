@@ -349,7 +349,7 @@ Start the server
 
 ## Production
 
-[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/uNIpBg?referralCode=86bdt1)
+[![Deploy on Railway](https://railway.app/button.svg)](https://railway.app/new/template/uOzrJ2?referralCode=WvP9-5)
 
 ---
 

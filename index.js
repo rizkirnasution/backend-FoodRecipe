@@ -35,6 +35,14 @@ app.use(cors({
 app.use(morgan('dev'))
 
 app.use('/api/v1', routesNavigator)
+app.use('*', (req, res) => {
+  res.status(404).json({
+    method: req.method,
+    message: 'cant find spesific endpoint, please make sure you read a documentation',
+    status: false,
+    code: 401
+  })
+})
 
 app.listen(PORT, () => {
   if (NODE_ENV === 'development') console.log(`Listen port at ${PORT}`)
