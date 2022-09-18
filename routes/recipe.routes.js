@@ -5,6 +5,7 @@ const { query, param, check } = require('express-validator')
 const {
   getAllRecipeControllers,
   getRecipeControllersById,
+  getRecipeControllersByUserId,
   postRecipeControllers,
   putRecipeControllers,
   deleteRecipeControllers
@@ -30,6 +31,9 @@ Route
   .get('/:id', validate([
     param('id').escape().trim().notEmpty().withMessage('Recipe ID can\'t be empty').bail().isNumeric().withMessage('Recipe ID must be numeric').bail().toInt()
   ]), cacheSingleRecipe, checkRecipeExisting, getRecipeControllersById)
+  .get('/user/:userId', validate([
+    param('userId').escape().trim().notEmpty().withMessage('User ID can\'t be empty').bail().isNumeric().withMessage('User ID must be numeric').bail().toInt()
+  ]), verifyToken, grantedOnlyCreator, getRecipeControllersByUserId)
   .post('/', multerHandler, validate([
     check('title').escape().trim().notEmpty().withMessage('Recipe title can\'t be empty'),
     check('ingredient').escape().trim().notEmpty().withMessage('Recipe ingredient can\'t be empty'),

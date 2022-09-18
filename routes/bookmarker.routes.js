@@ -19,8 +19,8 @@ Route
     query('limit').escape().trim().toInt(),
     query('page').escape().trim().toInt()
   ]), getAllBookmarkerControllers)
-  .get('/:id', validate([
-    param('id').escape().trim().notEmpty().withMessage('User ID can\'t be empty').bail().isNumeric().withMessage('User ID must be numeric').bail().toInt()
+  .get('/:userId', validate([
+    param('userId').escape().trim().notEmpty().withMessage('User ID can\'t be empty').bail().isNumeric().withMessage('User ID must be numeric').bail().toInt()
   ]), verifyToken, grantedAll, getBookmarkerByUserIdControllers)
   .post('/', validate([
     check('recipe_id').escape().trim().notEmpty().withMessage('Recipe ID\'s can\'t be empty').bail().isNumeric().withMessage('Recipe ID\'s must be numeric').bail().toInt()

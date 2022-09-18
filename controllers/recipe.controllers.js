@@ -251,6 +251,96 @@ module.exports = {
       })
     }
   },
+  getRecipeControllersByUserId: async (req, res) => {
+    try {
+      const params = req.params
+      const paramsLength = Object.keys(params).length
+      const user = req.userData
+      const userId = params.userId
+
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
+
+      if (user.id !== userId) throw new createErrors.UnavailableForLegalReasons('Failed to get recipes, your\'e not the creator of recipes')
+
+      const result = await knex
+        .select(selectedColumnUserRecipes)
+        .from('recipes')
+        .leftOuterJoin('users', 'recipes.creator_id', 'users.id')
+        .leftOuterJoin('videos', 'recipes.id', 'videos.recipe_id')
+        .where('recipes.creator_id', userId)
+
+      const recipeVideos = []
+      const recipeCreator = []
+
+      result.forEach(value => {
+        recipeVideos.push({
+          id: value.video_id,
+          title: value.video_title,
+          thumbnail: value.video_thumbnail,
+          url: value.video_url,
+          recipe_id: value.recipe_video_id,
+          created_at: value.video_created_at,
+          updated_at: value.video_updated_at
+        })
+
+        recipeCreator.push({
+          id: value.creator_id,
+          email: value.creator_email,
+          name: value.creator_name,
+          picture: value.creator_picture,
+          phone: value.creator_phone,
+          creator_id: value.recipe_creator_id
+        })
+
+        return value
+      })
+
+      const listOfRecipe = []
+      const mappingRecipe = result.map(value => {
+        return {
+          id: value.id,
+          title: value.title,
+          ingredient: value.ingredient,
+          category: value.category,
+          thumbnail: value.thumbnail,
+          created_at: value.created_at,
+          updated_at: value.updated_at,
+          videos: recipeVideos.filter(videoValue => videoValue.recipe_id === value.id),
+          creator: recipeCreator.filter(creatorValue => creatorValue.creator_id === value.creator_id)[0]
+        }
+      })
+
+      recipeVideos.forEach(value => {
+        delete value.recipe_id
+
+        return value
+      })
+
+      recipeCreator.forEach(value => {
+        delete value.creator_id
+
+        return value
+      })
+
+      const recipes = mappingRecipe.filter(value => {
+        const isDuplicate = listOfRecipe.includes(value.id)
+
+        if (!isDuplicate) {
+          listOfRecipe.push(value.id)
+
+          return true
+        }
+
+        return false
+      })
+
+      return response(res, 200, result ? recipes : [])
+    } catch (error) {
+      return response(res, error.status || 500, {
+        message: error.message || error
+      })
+    }
+  },
   postRecipeControllers: async (req, res) => {
     try {
       const data = req.body

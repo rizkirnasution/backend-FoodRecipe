@@ -97,7 +97,7 @@ module.exports = {
         verificationEmailTemplate(req)
       )
 
-      res.writeHead(302, { Location: FRONTEND_URL })
+      res.writeHead(302, { Location: `${FRONTEND_URL}/auth/login` })
       res.end()
     } catch (error) {
       return response(res, error.status || 500, {

@@ -201,11 +201,11 @@ module.exports = {
       const params = req.params
       const paramsLength = Object.keys(params).length
       const user = req.userData
-      const id = params.id
+      const userId = params.userId
 
       if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
-      if (user.id !== id) throw new createErrors.UnavailableForLegalReasons('Failed to get bookmark, your\'e not the bookmarker')
+      if (user.id !== userId) throw new createErrors.UnavailableForLegalReasons('Failed to get bookmark, your\'e not the bookmarker')
 
       const result = await n.array(
         n.type({
@@ -251,7 +251,7 @@ module.exports = {
             .innerJoin('recipes as R', 'B.recipe_id', 'R.id')
             .innerJoin('videos as V', 'V.recipe_id', 'R.id')
             .innerJoin('users as UR', 'R.creator_id', 'UR.id')
-            .where('B.user_id', id)
+            .where('B.user_id', userId)
         )
 
       return response(res, 200, result || [])
