@@ -24,7 +24,7 @@ Route
     check('role').optional({
       nullable: true,
       checkFalsy: true
-    }).escape().trim().isIn(['user', 'creator']).withMessage('Invalid role!')
+    }).escape().trim().isIn(['user', 'creator']).withMessage('Invalid role')
   ]), registerControllers)
   .get('/verification/:code', validate([
     param('code').escape().trim().notEmpty().withMessage('Verification Code can\'t be empty').bail().isString().withMessage('Verification code must be string/random text')

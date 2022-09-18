@@ -28,9 +28,9 @@ module.exports = {
       const user = await knex.select('name').from('users').where('email', data.email).first()
       let result = ''
 
-      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty')
 
-      if (user) throw new createErrors.Conflict('Account has been registered!')
+      if (user) throw new createErrors.Conflict('Account has been registered')
 
       const hashPassword = await argon2.hash(data.password, { type: argon2.argon2id })
       const randomCode = random(12)
@@ -55,7 +55,7 @@ module.exports = {
         }).returning('name')
       }
 
-      if (!result) throw new createErrors.NotImplemented('Registration failed!')
+      if (!result) throw new createErrors.NotImplemented('Registration failed')
 
       await sendMail(
         data.email,
@@ -64,7 +64,7 @@ module.exports = {
       )
 
       result = {
-        message: `Register new account: ${result[0].name}, to continue please verify you're email address first!`
+        message: `Register new account: ${result[0].name}, to continue please verify you're email address first`
       }
 
       return response(res, 201, result)
@@ -79,17 +79,17 @@ module.exports = {
       const params = req.params
       const paramsLength = Object.keys(params).length
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
       const decryptVerificationCode = legacyDecrypt(params.code)
       const user = await knex.select('*').from('users').where('verification_code', decryptVerificationCode).first()
 
-      if (!user) throw new createErrors.NotAcceptable('Verification code is not valid!')
+      if (!user) throw new createErrors.NotAcceptable('Verification code is not valid')
 
       const id = user.id
       const result = await knex('users').where('id', id).update('verification_code', '').returning('name')
 
-      if (!result) throw new createErrors.NotImplemented('Verification failed!')
+      if (!result) throw new createErrors.NotImplemented('Verification failed')
 
       await sendMail(
         user.email,
@@ -112,16 +112,16 @@ module.exports = {
       const user = await knex.select('*').from('users').where('email', data.email).first()
       const sessionToken = req.signedCookies?.token
 
-      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
-      if (!user) throw new createErrors.ExpectationFailed('Unregistered account!')
-      if (sessionToken) throw new createErrors.UnprocessableEntity('Session still active, you need to log out!')
-      if (user?.verification_code) throw new createErrors.UnprocessableEntity('Account need to verification!')
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty')
+      if (!user) throw new createErrors.ExpectationFailed('Unregistered account')
+      if (sessionToken) throw new createErrors.UnprocessableEntity('Session still active, you need to log out')
+      if (user?.verification_code) throw new createErrors.UnprocessableEntity('Account need to verification')
 
       const verifyPassword = await argon2.verify(user.password, data.password)
 
       delete user.password
 
-      if (!verifyPassword) throw new createErrors.NotAcceptable('Password did not match!')
+      if (!verifyPassword) throw new createErrors.NotAcceptable('Password did not match')
 
       const dataToSign = { email: user.email }
       const accessToken = jwt.sign(dataToSign, JWT_SECRET_KEY, {
@@ -146,7 +146,7 @@ module.exports = {
 
       const addedRefreshToken = await knex('users').where('email', user.email).update('refresh_token', refreshToken).returning('name')
 
-      if (!addedRefreshToken) throw new createErrors.NotAcceptable('Failed to adding refresh token!')
+      if (!addedRefreshToken) throw new createErrors.NotAcceptable('Failed to adding refresh token')
 
       delete user.refresh_token
       delete user?.verification_code
@@ -167,11 +167,11 @@ module.exports = {
     try {
       const data = req.data
 
-      if (!data) throw new createErrors.NotExtended('Session not found!')
+      if (!data) throw new createErrors.NotExtended('Session not found')
 
       const user = await knex.select('email').from('users').where('email', data.email).first()
 
-      if (!user) throw new createErrors.ExpectationFailed('Unregistered account!')
+      if (!user) throw new createErrors.ExpectationFailed('Unregistered account')
 
       const dataToSign = { email: user.email }
       const accessToken = jwt.sign(dataToSign, JWT_SECRET_KEY, {
@@ -190,11 +190,11 @@ module.exports = {
     try {
       const user = req.userData
 
-      if (!user) throw new createErrors.NotExtended('Session not found!')
+      if (!user) throw new createErrors.NotExtended('Session not found')
 
       const removeRefreshToken = await knex('users').where('email', user.email).update('refresh_token', '').returning('name')
 
-      if (!removeRefreshToken) throw new createErrors.NotAcceptable('Failed to remove refresh token!')
+      if (!removeRefreshToken) throw new createErrors.NotAcceptable('Failed to remove refresh token')
 
       res.clearCookie('token')
 

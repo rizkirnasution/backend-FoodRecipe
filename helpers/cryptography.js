@@ -20,7 +20,7 @@ const iv = crypto.randomBytes(16)
 module.exports = {
   encrypt: async (iterationNum = 15, data) => {
     return new Promise((resolve, reject) => {
-      if (typeof data === 'function') reject(new createErrors.FailedDependency('Type of function is not supported!'))
+      if (typeof data === 'function') reject(new createErrors.FailedDependency('Type of function is not supported'))
 
       const { encryptString } = new StringCrypto({
         salt: ENCRYPTION_SALT,

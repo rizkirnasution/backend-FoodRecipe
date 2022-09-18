@@ -12,7 +12,7 @@ module.exports = {
       const file = req.files?.picture || {}
       const videoFile = req.files?.video || {}
 
-      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty')
 
       if (file.length) {
         cloudinary.v2.config({ secure: true })
@@ -57,7 +57,7 @@ module.exports = {
 
       await knex('videos').insert(newVideo)
 
-      const message = 'New Video successfully added!'
+      const message = 'New Video successfully added'
 
       return response(res, 201, message)
     } catch (error) {
@@ -75,9 +75,9 @@ module.exports = {
       const file = req.files?.picture || {}
       const videoFile = req.files?.video || {}
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
-      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty')
 
       if (file.length) {
         cloudinary.v2.config({ secure: true })
@@ -117,7 +117,7 @@ module.exports = {
 
       await knex('videos').where('id', id).update(data)
 
-      const message = 'Existing Video successfully updated!'
+      const message = 'Existing Video successfully updated'
 
       return response(res, 201, message)
     } catch (error) {
@@ -131,13 +131,13 @@ module.exports = {
       const params = req.params
       const paramsLength = Object.keys(params).length
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
       const id = req.params.id
 
       await knex('videos').where('id', id).del()
 
-      const message = 'Existing Video successfully deleted!'
+      const message = 'Existing Video successfully deleted'
 
       return response(res, 200, message)
     } catch (error) {

@@ -168,7 +168,7 @@ module.exports = {
       const params = req.params
       const paramsLength = Object.keys(params).length
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
       const id = req.params.id
       const result = await knex
@@ -259,7 +259,7 @@ module.exports = {
       const video = req.files?.video || {}
       const videoUrls = []
 
-      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty')
 
       if (file.length) {
         cloudinary.v2.config({ secure: true })
@@ -325,7 +325,7 @@ module.exports = {
         }
       }
 
-      const message = `New recipes: ${result[0].title}, successfully added!`
+      const message = `New recipes: ${result[0].title}, successfully added`
 
       return response(res, 201, message)
     } catch (error) {
@@ -344,11 +344,11 @@ module.exports = {
       const user = req.userData
       const recipe = req.recipeData
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
-      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty')
 
-      if (user.id !== recipe.creator) throw new createErrors.UnavailableForLegalReasons('You\'re not the creator of this recipe!')
+      if (user.id !== recipe.creator) throw new createErrors.UnavailableForLegalReasons('You\'re not the creator of this recipe')
 
       if (file.length) {
         cloudinary.v2.config({ secure: true })
@@ -403,7 +403,7 @@ module.exports = {
         )
       }
 
-      const message = `Existing recipes: ${result[0].title}, successfully updated!`
+      const message = `Existing recipes: ${result[0].title}, successfully updated`
 
       return response(res, 200, message)
     } catch (error) {
@@ -419,14 +419,14 @@ module.exports = {
       const user = req.userData
       const recipe = req.recipeData
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
-      if (user.id !== recipe.creator) throw new createErrors.UnavailableForLegalReasons('You\'re not the creator of this recipe!')
+      if (user.id !== recipe.creator) throw new createErrors.UnavailableForLegalReasons('You\'re not the creator of this recipe')
 
       const id = req.params.id
       const result = await knex('recipes').where('id', id).del().returning('*')
 
-      const message = `Existing recipes: ${result[0].title}, successfully deleted!`
+      const message = `Existing recipes: ${result[0].title}, successfully deleted`
 
       return response(res, 200, message)
     } catch (error) {
