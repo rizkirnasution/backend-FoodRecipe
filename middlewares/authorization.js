@@ -8,7 +8,7 @@ module.exports = {
       const email = req.userData.email
       const checkUser = await knex.select('role').from('users').where('email', email).first()
 
-      if (!checkUser) throw new createErrors.Unauthorized('Access denied, account unregistered!')
+      if (!checkUser) throw new createErrors.Unauthorized('Access denied, account unregistered')
 
       const { role } = checkUser
 
@@ -32,7 +32,7 @@ module.exports = {
       const email = req.userData.email
       const checkUser = await knex.select('role').from('users').where('email', email).first()
 
-      if (!checkUser) throw new createErrors.Unauthorized('Access denied, account unregistered!')
+      if (!checkUser) throw new createErrors.Unauthorized('Access denied, account unregistered')
 
       const { role } = checkUser
 

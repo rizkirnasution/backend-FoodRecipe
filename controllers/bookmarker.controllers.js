@@ -203,9 +203,9 @@ module.exports = {
       const user = req.userData
       const id = params.id
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
-      if (user.id !== id) throw new createErrors.UnavailableForLegalReasons('Failed to get bookmark, your\'e not the bookmarker!')
+      if (user.id !== id) throw new createErrors.UnavailableForLegalReasons('Failed to get bookmark, your\'e not the bookmarker')
 
       const result = await n.array(
         n.type({
@@ -269,9 +269,9 @@ module.exports = {
       const existingBookmarker = await knex.select('id').from('bookmarkers').where('recipe_id', data?.recipe_id).andWhere('user_id', user.id).first()
       const checkRecipe = await knex.select('id').from('recipes').where('id', data?.recipe_id).first()
 
-      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty')
 
-      if (existingBookmarker?.id) throw new createErrors.Conflict('Recipe already bookmarked!')
+      if (existingBookmarker?.id) throw new createErrors.Conflict('Recipe already bookmarked')
 
       if (!checkRecipe?.id) throw new createErrors.UnprocessableEntity('Recipe unavailable on server')
 
@@ -283,7 +283,7 @@ module.exports = {
 
       if (!result) throw new createErrors.UnprocessableEntity('Failed to bookmark this recipe')
 
-      const message = 'Bookmarked recipe!'
+      const message = 'Bookmarked recipe'
 
       return response(res, 201, message)
     } catch (error) {
@@ -299,16 +299,16 @@ module.exports = {
       const user = req.userData
       const bookmarker = req.bookmarkerData
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
-      if (user.id !== bookmarker.user) throw new createErrors.UnavailableForLegalReasons('You\'re not the bookmarker of this recipe!')
+      if (user.id !== bookmarker.user) throw new createErrors.UnavailableForLegalReasons('You\'re not the bookmarker of this recipe')
 
       const id = req.params.id
       const result = await knex('bookmarkers').where('id', id).del().returning('id')
 
       if (!result) throw new createErrors.UnprocessableEntity('Failed to remove bookmark of recipe')
 
-      const message = 'Bookmark recipe removed!'
+      const message = 'Bookmark recipe removed'
 
       return response(res, 200, message)
     } catch (error) {

@@ -13,7 +13,7 @@ module.exports = {
           id: checkRecipe?.id
         }
       } else {
-        throw new createErrors.ExpectationFailed('Recipe data not available on server!')
+        throw new createErrors.ExpectationFailed('Recipe data not available on server')
       }
 
       next()
@@ -32,7 +32,7 @@ module.exports = {
           recipe: checkVideo?.recipe_id
         }
       } else {
-        throw new createErrors.ExpectationFailed('Video data not available on server!')
+        throw new createErrors.ExpectationFailed('Video data not available on server')
       }
 
       next()
@@ -51,7 +51,7 @@ module.exports = {
           user: checkLiker?.user_id
         }
       } else {
-        throw new createErrors.ExpectationFailed('Liker data not available on server!')
+        throw new createErrors.ExpectationFailed('Liker data not available on server')
       }
 
       next()
@@ -70,7 +70,7 @@ module.exports = {
           user: checkBookmarker?.user_id
         }
       } else {
-        throw new createErrors.ExpectationFailed('Bookmarker data not available on server!')
+        throw new createErrors.ExpectationFailed('Bookmarker data not available on server')
       }
 
       next()

@@ -16,11 +16,13 @@ module.exports = {
       const token = req.headers.authorization
       const signedCookie = req.signedCookies
 
-      if (!signedCookie?.token) throw new createErrors.UnavailableForLegalReasons('Session unavailable!')
+      if (!signedCookie?.token) throw new createErrors.Unauthorized('Session unavailable')
 
       if (typeof token !== 'undefined') {
         const bearer = token.split(' ')
         const bearerToken = bearer[1]
+
+        if (!bearerToken) throw new createErrors.Unauthorized('Empty access token')
 
         jwt.verify(
           bearerToken,
@@ -34,7 +36,7 @@ module.exports = {
             } else {
               const user = await knex.select('id', 'role', 'email').from('users').where('email', result.email).first()
 
-              if (!user) throw new createErrors.Unauthorized('Access denied, account unregistered!')
+              if (!user) throw new createErrors.Unauthorized('Access denied, account unregistered')
 
               req.userData = user
 
@@ -43,7 +45,7 @@ module.exports = {
           }
         )
       } else {
-        throw new createErrors.PreconditionRequired('Bearer token must be conditioned!')
+        throw new createErrors.Unauthorized('Bearer token must be conditioned')
       }
     } catch (error) {
       return response(res, error.status || 500, {
@@ -55,12 +57,13 @@ module.exports = {
     try {
       const signedCookie = req.signedCookies
 
-      if (!signedCookie?.token) throw new createErrors.UnavailableForLegalReasons('Session unavailable!')
+      if (!signedCookie?.token) throw new createErrors.PreconditionFailed('Session unavailable')
 
       const { token } = req.signedCookies
-      const decryptionTokenFromSignedCookie = decrypt(13, token)
 
       if (typeof token !== 'undefined') {
+        const decryptionTokenFromSignedCookie = decrypt(13, token)
+
         jwt.verify(
           decryptionTokenFromSignedCookie,
           JWT_REFRESH_SECRET_KEY,
@@ -76,7 +79,7 @@ module.exports = {
           }
         )
       } else {
-        throw new createErrors.PreconditionRequired('Refresh token must be conditioned!')
+        throw new createErrors.PreconditionFailed('Refresh token must be conditioned')
       }
     } catch (error) {
       return response(res, error.status, {

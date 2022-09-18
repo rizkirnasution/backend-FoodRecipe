@@ -17,7 +17,7 @@ const multerStorage = multer({
     if (mimetype && extname) {
       cb(null, true)
     } else {
-      cb(new createErrors.UnsupportedMediaType('File type not allowed!'), false)
+      cb(new createErrors.UnsupportedMediaType('File type not allowed'), false)
     }
   },
   limits: {

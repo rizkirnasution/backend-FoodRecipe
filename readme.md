@@ -50,6 +50,21 @@
 - [dotenv](https://ghub.io/dotenv): Loads environment variables from .env file
 - [duration-js](https://ghub.io/duration-js): small simple library for dealing with durations
 - [express](https://ghub.io/express): Fast, unopinionated, minimalist web framework
+- [express-validator](https://ghub.io/express-validator): Express middleware for the validator module.
+- [helmet](https://ghub.io/helmet): help secure Express/Connect apps with various HTTP headers
+- [http-errors](https://ghub.io/http-errors): Create HTTP error objects
+- [jsonwebtoken](https://ghub.io/jsonwebtoken): JSON Web Token implementation (symmetric and asymmetric)
+- [knex](https://ghub.io/knex): A batteries-included SQL query &amp; schema builder for PostgresSQL, MySQL, CockroachDB, MSSQL and SQLite3
+- [morgan](https://ghub.io/morgan): HTTP request logger middleware for node.js
+- [multer](https://ghub.io/multer): Middleware for handling `multipart/form-data`.
+- [nested-knex](https://ghub.io/nested-knex): Get typed nested object for knex.js
+- [nodemailer](https://ghub.io/nodemailer): Easy as cake e-mail sending from your Node.js applications
+- [nodemon](https://ghub.io/nodemon): Simple monitor script for use during development of a Node.js app.
+- [pg](https://ghub.io/pg): PostgreSQL client - pure javascript &amp; libpq with the same API
+- [redis](https://ghub.io/redis): A modern, high performance Redis client
+- [serve-favicon](https://ghub.io/serve-favicon): favicon serving middleware with caching
+- [string-crypto](https://ghub.io/string-crypto): Small and simple (yet secure) library to encrypt and decrypt strings using PBKDF2 for key derivation and AES (defaulted to 256-bit / SHA512)
+- [xss-clean](https://ghub.io/xss-clean): middleware to sanitize user input
 
 
 ## Dev Dependencies

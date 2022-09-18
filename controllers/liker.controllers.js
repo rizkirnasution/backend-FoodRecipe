@@ -203,9 +203,9 @@ module.exports = {
       const user = req.userData
       const id = params.id
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
-      if (user.id !== id) throw new createErrors.UnavailableForLegalReasons('Failed to get likers, your\'e not the liker!')
+      if (user.id !== id) throw new createErrors.UnavailableForLegalReasons('Failed to get likers, your\'e not the liker')
 
       const result = await n.array(
         n.type({
@@ -269,9 +269,9 @@ module.exports = {
       const existingLiker = await knex.select('id').from('likers').where('recipe_id', data?.recipe_id).andWhere('user_id', user.id).first()
       const checkRecipe = await knex.select('id').from('recipes').where('id', data?.recipe_id).first()
 
-      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty')
 
-      if (existingLiker?.id) throw new createErrors.Conflict('Recipe already liked!')
+      if (existingLiker?.id) throw new createErrors.Conflict('Recipe already liked')
 
       if (!checkRecipe?.id) throw new createErrors.UnprocessableEntity('Recipe unavailable on server')
 
@@ -283,7 +283,7 @@ module.exports = {
 
       if (!result) throw new createErrors.UnprocessableEntity('Failed to like this recipe')
 
-      const message = 'Liked recipe!'
+      const message = 'Liked recipe'
 
       return response(res, 201, message)
     } catch (error) {
@@ -299,16 +299,16 @@ module.exports = {
       const user = req.userData
       const liker = req.likerData
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
-      if (user.id !== liker.user) throw new createErrors.UnavailableForLegalReasons('You\'re not the liker of this recipe!')
+      if (user.id !== liker.user) throw new createErrors.UnavailableForLegalReasons('You\'re not the liker of this recipe')
 
       const id = req.params.id
       const result = await knex('likers').where('id', id).del().returning('id')
 
       if (!result) throw new createErrors.UnprocessableEntity('Failed to dislike this recipe')
 
-      const message = 'Disliked recipe!'
+      const message = 'Disliked recipe'
 
       return response(res, 200, message)
     } catch (error) {

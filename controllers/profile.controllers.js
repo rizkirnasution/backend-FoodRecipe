@@ -16,13 +16,13 @@ module.exports = {
       const id = params.id
       const userData = req.userData
 
-      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty!')
+      if (!paramsLength) throw new createErrors.BadRequest('Request parameters empty')
 
-      if (!bodyLength) throw new createErrors.BadRequest('Request body empty!')
+      if (!bodyLength) throw new createErrors.BadRequest('Request body empty')
 
       const user = await knex.select('name').from('users').where('id', id).first()
 
-      if (!user) throw new createErrors.ExpectationFailed('Unregistered account!')
+      if (!user) throw new createErrors.ExpectationFailed('Unregistered account')
 
       if (userData.id !== id) throw new createErrors.ExpectationFailed('Your profile ID did not match with session')
 
@@ -50,7 +50,7 @@ module.exports = {
 
       const result = await knex('users').where('id', id).update(data).returning('name')
 
-      const message = `Profile: ${result[0].name}, successfully updated!`
+      const message = `Profile: ${result[0].name}, successfully updated`
 
       return response(res, 200, message)
     } catch (error) {
