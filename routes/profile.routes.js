@@ -2,13 +2,14 @@ const express = require('express')
 const { param, check } = require('express-validator')
 const Route = express.Router()
 
-const { editProfileControllers } = require('../controllers/profile.controllers')
+const { editProfileControllers, getProfileControllers } = require('../controllers/profile.controllers')
 const { grantedAll } = require('../middlewares/authorization')
 const { multerHandler } = require('../middlewares/upload')
 const validate = require('../middlewares/validation')
 const { verifyToken } = require('../middlewares/verify')
 
 Route
+  .get('/', verifyToken, getProfileControllers)
   .put('/:id', multerHandler, validate([
     param('id').escape().trim().notEmpty().withMessage('User ID can\'t be empty').bail().isNumeric().withMessage('User ID must be numeric').bail().toInt(),
     check('name').optional({

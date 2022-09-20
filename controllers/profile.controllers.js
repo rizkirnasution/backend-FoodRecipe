@@ -6,6 +6,25 @@ const knex = require('../config/knex')
 const fs = require('node:fs')
 
 module.exports = {
+  getProfileControllers: async (req, res) => {
+    try {
+      const userData = req.userData
+      const id = userData?.id
+      const user = await knex.select().from('users').where('id', id).first()
+
+      delete user?.password
+      delete user?.refresh_token
+      delete user?.verification_code
+
+      if (!user) throw new createErrors.ExpectationFailed('Unregistered account')
+
+      return response(res, 200, user)
+    } catch (error) {
+      return response(res, error.status || 500, {
+        message: error.message || error
+      })
+    }
+  },
   editProfileControllers: async (req, res) => {
     try {
       const params = req.params
