@@ -57,7 +57,9 @@ module.exports = {
     try {
       const signedCookie = req.signedCookies
 
-      if (!signedCookie?.token) throw new createErrors.PreconditionFailed('Session unavailable')
+      console.log('test signed cookie', signedCookie)
+
+      if (!signedCookie?.token) throw new createErrors.PreconditionFailed('Refresh token unavailable')
 
       const { token } = req.signedCookies
 

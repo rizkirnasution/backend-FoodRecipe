@@ -10,8 +10,7 @@ const {
   JWT_REFRESH_SECRET_KEY,
   JWT_REFRESH_TOKEN_LIFE,
   JWT_ALGORITHM,
-  FRONTEND_URL,
-  NODE_ENV
+  FRONTEND_URL
 } = process.env
 const { encrypt, legacyEncrypt, legacyDecrypt } = require('../helpers/cryptography')
 const knex = require('../config/knex')
@@ -97,7 +96,7 @@ module.exports = {
         verificationEmailTemplate(req)
       )
 
-      res.writeHead(302, { Location: `${FRONTEND_URL}/auth/login` })
+      res.writeHead(302, { Location: `${FRONTEND_URL}/login` })
       res.end()
     } catch (error) {
       return response(res, error.status || 500, {
@@ -139,8 +138,8 @@ module.exports = {
         maxAge: maxAgeCookie,
         expires: maxAgeCookie + Date.now(),
         httpOnly: true,
-        sameSite: 'strict',
-        secure: NODE_ENV === 'production',
+        sameSite: 'none',
+        secure: true,
         signed: true
       })
 
