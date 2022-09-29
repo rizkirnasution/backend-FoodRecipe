@@ -31,7 +31,7 @@ app.use(cors({
   origin: FRONTEND_URL,
   allowedHeaders: ['Content-Type', 'Authorization'],
   methods: ['GET', 'PUT', 'POST', 'DELETE'],
-  credentials: NODE_ENV === 'production'
+  credentials: true
 }))
 app.use(morgan('dev'))
 
