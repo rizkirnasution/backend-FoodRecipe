@@ -9,6 +9,7 @@ module.exports = {
       const queryParams = req.query
       let result = ''
       let totalRows = 0
+      let rowsWithoutLimit = ''
 
       if (!queryParams) {
         result = await n.array(
@@ -56,6 +57,8 @@ module.exports = {
               .innerJoin('videos as V', 'V.recipe_id', 'R.id')
               .innerJoin('users as UR', 'R.creator_id', 'UR.id')
           )
+
+        rowsWithoutLimit = result
       } else {
         if (queryParams?.search) {
           result = await n.array(
@@ -116,6 +119,63 @@ module.exports = {
                 .limit(`${parseInt(queryParams?.limit) || 'NULL'}`)
                 .offset(`${Math.max(((parseInt(queryParams?.limit) || 10) * (parseInt(queryParams?.page) || 0)) - (parseInt(queryParams?.limit) || 10), 0)}`)
             )
+
+          rowsWithoutLimit = await n.array(
+            n.type({
+              id: n.number('B.id', { id: true }),
+              bookmarker: n.type({
+                id: n.number('U.id', { id: true }),
+                name: n.string('U.name'),
+                email: n.string('U.email'),
+                picture: n.string('U.picture'),
+                phone: n.string('U.phone')
+              }),
+              recipes: n.array(n.type({
+                id: n.number('R.id', { id: true }),
+                title: n.string('R.title'),
+                ingredient: n.string('R.ingredient'),
+                category: n.string('R.category'),
+                thumbnail: n.string('R.thumbnail'),
+                videos: n.array(n.type({
+                  id: n.number('V.id', { id: true }),
+                  title: n.string('V.title'),
+                  thumbnail: n.string('V.thumbnail'),
+                  url: n.string('V.url'),
+                  created_at: n.date('V.created_at'),
+                  updated_at: n.date('V.updated_at')
+                })),
+                creator: n.type({
+                  id: n.number('UR.id', { id: true }),
+                  name: n.string('UR.name'),
+                  email: n.string('UR.email'),
+                  picture: n.string('UR.picture'),
+                  phone: n.string('UR.phone')
+                }),
+                created_at: n.date('R.created_at'),
+                updated_at: n.date('R.updated_at')
+              })),
+              created_at: n.date('B.created_at'),
+              updated_at: n.date('B.updated_at')
+            })
+          )
+            .withQuery(
+              knex('bookmarkers as B')
+                .innerJoin('users as U', 'B.user_id', 'U.id')
+                .innerJoin('recipes as R', 'B.recipe_id', 'R.id')
+                .innerJoin('videos as V', 'V.recipe_id', 'R.id')
+                .innerJoin('users as UR', 'R.creator_id', 'UR.id')
+                .whereILike('U.name', `%${queryParams.search}%`)
+                .orWhereILike('U.email', `%${queryParams.search}%`)
+                .orWhereILike('U.phone', `%${queryParams.search}%`)
+                .orWhereILike('UR.name', `%${queryParams.search}%`)
+                .orWhereILike('UR.email', `%${queryParams.search}%`)
+                .orWhereILike('UR.phone', `%${queryParams.search}%`)
+                .orWhereILike('R.title', `%${queryParams.search}%`)
+                .orWhereILike('R.ingredient', `%${queryParams.search}%`)
+                .orWhereILike('R.category', `%${queryParams.search}%`)
+                .orWhereILike('V.title', `%${queryParams.search}%`)
+                .orderBy(`${queryParams?.orderBy ? `B.${queryParams?.orderBy}` : 'B.id'}`, `${queryParams?.sortBy || 'desc'}`)
+            )
         } else {
           result = await n.array(
             n.type({
@@ -165,14 +225,61 @@ module.exports = {
                 .limit(`${parseInt(queryParams?.limit) || 'NULL'}`)
                 .offset(`${Math.max(((parseInt(queryParams?.limit) || 10) * (parseInt(queryParams?.page) || 0)) - (parseInt(queryParams?.limit) || 10), 0)}`)
             )
+
+          rowsWithoutLimit = await n.array(
+            n.type({
+              id: n.number('B.id', { id: true }),
+              bookmarker: n.type({
+                id: n.number('U.id', { id: true }),
+                name: n.string('U.name'),
+                email: n.string('U.email'),
+                picture: n.string('U.picture'),
+                phone: n.string('U.phone')
+              }),
+              recipes: n.array(n.type({
+                id: n.number('R.id', { id: true }),
+                title: n.string('R.title'),
+                ingredient: n.string('R.ingredient'),
+                category: n.string('R.category'),
+                thumbnail: n.string('R.thumbnail'),
+                videos: n.array(n.type({
+                  id: n.number('V.id', { id: true }),
+                  title: n.string('V.title'),
+                  thumbnail: n.string('V.thumbnail'),
+                  url: n.string('V.url'),
+                  created_at: n.date('V.created_at'),
+                  updated_at: n.date('V.updated_at')
+                })),
+                creator: n.type({
+                  id: n.number('UR.id', { id: true }),
+                  name: n.string('UR.name'),
+                  email: n.string('UR.email'),
+                  picture: n.string('UR.picture'),
+                  phone: n.string('UR.phone')
+                }),
+                created_at: n.date('R.created_at'),
+                updated_at: n.date('R.updated_at')
+              })),
+              created_at: n.date('B.created_at'),
+              updated_at: n.date('B.updated_at')
+            })
+          )
+            .withQuery(
+              knex('bookmarkers as B')
+                .innerJoin('users as U', 'B.user_id', 'U.id')
+                .innerJoin('recipes as R', 'B.recipe_id', 'R.id')
+                .innerJoin('videos as V', 'V.recipe_id', 'R.id')
+                .innerJoin('users as UR', 'R.creator_id', 'UR.id')
+                .orderBy(`${queryParams?.orderBy ? `B.${queryParams?.orderBy}` : 'B.id'}`, `${queryParams?.sortBy || 'desc'}`)
+            )
         }
       }
 
-      totalRows = result.length
+      totalRows = rowsWithoutLimit.length
 
       const totalActiveRows = result.length
       const sheets = Math.ceil(totalRows / (parseInt(queryParams?.limit) || 0))
-      const nextPage = (page, limit, total) => (total / limit) >= page ? (limit <= 0 ? false : page + 1) : false
+      const nextPage = (page, limit, total) => (total / limit) > page ? (limit <= 0 ? false : page + 1) : false
       const previousPage = (page) => page <= 1 ? false : page - 1
 
       const pagination = {
