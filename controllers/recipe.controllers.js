@@ -9,6 +9,7 @@ const { selectedColumnUserRecipes } = require('../constants/recipe.data')
 require('dotenv').config()
 const { REDIS_CACHE_LIFE } = process.env
 const fs = require('node:fs')
+const n = require('nested-knex')
 
 module.exports = {
   getAllRecipeControllers: async (req, res) => {
@@ -16,111 +17,199 @@ module.exports = {
       const queryParams = req.query
       let result = ''
       let totalRows = 0
+      let rowsWithoutLimit = ''
 
       if (!queryParams) {
-        result = await knex
-          .select(selectedColumnUserRecipes)
-          .from('recipes')
-          .leftOuterJoin('users', 'recipes.creator_id', 'users.id')
-          .leftOuterJoin('videos', 'recipes.id', 'videos.recipe_id')
+        result = await n.array(
+          n.type({
+            id: n.number('R.id', { id: true }),
+            title: n.string('R.title'),
+            ingredient: n.string('R.ingredient'),
+            category: n.string('R.category'),
+            thumbnail: n.string('R.thumbnail'),
+            videos: n.array(n.type({
+              id: n.number('V.id', { id: true }),
+              title: n.string('V.title'),
+              thumbnail: n.string('V.thumbnail'),
+              url: n.string('V.url'),
+              created_at: n.date('V.created_at'),
+              updated_at: n.date('V.updated_at')
+            })),
+            creator: n.type({
+              id: n.number('U.id', { id: true }),
+              name: n.string('U.name'),
+              email: n.string('U.email'),
+              picture: n.string('U.picture'),
+              phone: n.string('U.phone')
+            }),
+            created_at: n.date('R.created_at'),
+            updated_at: n.date('R.updated_at')
+          })
+        )
+          .withQuery(
+            knex('recipes as R')
+              .leftOuterJoin('users as U', 'R.creator_id', 'U.id')
+              .leftOuterJoin('videos as V', 'R.id', 'V.recipe_id')
+          )
+
+        rowsWithoutLimit = result
       } else {
         if (queryParams?.search) {
-          result = await knex
-            .select(selectedColumnUserRecipes)
-            .from('recipes')
-            .leftOuterJoin('users', 'recipes.creator_id', 'users.id')
-            .leftOuterJoin('videos', 'recipes.id', 'videos.recipe_id')
-            .whereILike('recipes.title', `%${queryParams.search}%`)
-            .orWhereILike('recipes.ingredient', `%${queryParams.search}%`)
-            .orWhereILike('recipes.category', `%${queryParams.search}%`)
-            .orWhereILike('videos.title', `%${queryParams.search}%`)
-            .orWhereILike('users.name', `%${queryParams.search}%`)
-            .orWhereILike('users.phone', `%${queryParams.search}%`)
-            .orderBy(`${queryParams?.orderBy ? `recipes.${queryParams?.orderBy}` : 'recipes.id'}`, `${queryParams?.sortBy || 'desc'}`)
-            .limit(`${parseInt(queryParams?.limit) || 'NULL'}`)
-            .offset(`${Math.max(((parseInt(queryParams?.limit) || 10) * (parseInt(queryParams?.page) || 0)) - (parseInt(queryParams?.limit) || 10), 0)}`)
+          result = await n.array(
+            n.type({
+              id: n.number('R.id', { id: true }),
+              title: n.string('R.title'),
+              ingredient: n.string('R.ingredient'),
+              category: n.string('R.category'),
+              thumbnail: n.string('R.thumbnail'),
+              videos: n.array(n.type({
+                id: n.number('V.id', { id: true }),
+                title: n.string('V.title'),
+                thumbnail: n.string('V.thumbnail'),
+                url: n.string('V.url'),
+                created_at: n.date('V.created_at'),
+                updated_at: n.date('V.updated_at')
+              })),
+              creator: n.type({
+                id: n.number('U.id', { id: true }),
+                name: n.string('U.name'),
+                email: n.string('U.email'),
+                picture: n.string('U.picture'),
+                phone: n.string('U.phone')
+              }),
+              created_at: n.date('R.created_at'),
+              updated_at: n.date('R.updated_at')
+            })
+          )
+            .withQuery(
+              knex('recipes as R')
+                .leftOuterJoin('users as U', 'R.creator_id', 'U.id')
+                .leftOuterJoin('videos as V', 'R.id', 'V.recipe_id')
+                .whereILike('R.title', `%${queryParams.search}%`)
+                .orWhereILike('R.ingredient', `%${queryParams.search}%`)
+                .orWhereILike('R.category', `%${queryParams.search}%`)
+                .orWhereILike('V.title', `%${queryParams.search}%`)
+                .orWhereILike('U.name', `%${queryParams.search}%`)
+                .orWhereILike('U.phone', `%${queryParams.search}%`)
+                .orderBy(`${queryParams?.orderBy ? `R.${queryParams?.orderBy}` : 'R.id'}`, `${queryParams?.sortBy || 'desc'}`)
+                .limit(`${parseInt(queryParams?.limit) || 'NULL'}`)
+                .offset(`${Math.max(((parseInt(queryParams?.limit) || 10) * (parseInt(queryParams?.page) || 0)) - (parseInt(queryParams?.limit) || 10), 0)}`)
+            )
+
+          rowsWithoutLimit = await n.array(
+            n.type({
+              id: n.number('R.id', { id: true }),
+              title: n.string('R.title'),
+              ingredient: n.string('R.ingredient'),
+              category: n.string('R.category'),
+              thumbnail: n.string('R.thumbnail'),
+              videos: n.array(n.type({
+                id: n.number('V.id', { id: true }),
+                title: n.string('V.title'),
+                thumbnail: n.string('V.thumbnail'),
+                url: n.string('V.url'),
+                created_at: n.date('V.created_at'),
+                updated_at: n.date('V.updated_at')
+              })),
+              creator: n.type({
+                id: n.number('U.id', { id: true }),
+                name: n.string('U.name'),
+                email: n.string('U.email'),
+                picture: n.string('U.picture'),
+                phone: n.string('U.phone')
+              }),
+              created_at: n.date('R.created_at'),
+              updated_at: n.date('R.updated_at')
+            })
+          )
+            .withQuery(
+              knex('recipes as R')
+                .leftOuterJoin('users as U', 'R.creator_id', 'U.id')
+                .leftOuterJoin('videos as V', 'R.id', 'V.recipe_id')
+                .whereILike('R.title', `%${queryParams.search}%`)
+                .orWhereILike('R.ingredient', `%${queryParams.search}%`)
+                .orWhereILike('R.category', `%${queryParams.search}%`)
+                .orWhereILike('V.title', `%${queryParams.search}%`)
+                .orWhereILike('U.name', `%${queryParams.search}%`)
+                .orWhereILike('U.phone', `%${queryParams.search}%`)
+                .orderBy(`${queryParams?.orderBy ? `R.${queryParams?.orderBy}` : 'R.id'}`, `${queryParams?.sortBy || 'desc'}`)
+            )
         } else {
-          result = await knex
-            .select(selectedColumnUserRecipes)
-            .from('recipes')
-            .leftOuterJoin('users', 'recipes.creator_id', 'users.id')
-            .leftOuterJoin('videos', 'recipes.id', 'videos.recipe_id')
-            .orderBy(`${queryParams?.orderBy ? `recipes.${queryParams?.orderBy}` : 'recipes.id'}`, `${queryParams?.sortBy || 'desc'}`)
-            .limit(`${parseInt(queryParams?.limit) || 'NULL'}`)
-            .offset(`${Math.max(((parseInt(queryParams?.limit) || 10) * (parseInt(queryParams?.page) || 0)) - (parseInt(queryParams?.limit) || 10), 0)}`)
+          result = await n.array(
+            n.type({
+              id: n.number('R.id', { id: true }),
+              title: n.string('R.title'),
+              ingredient: n.string('R.ingredient'),
+              category: n.string('R.category'),
+              thumbnail: n.string('R.thumbnail'),
+              videos: n.array(n.type({
+                id: n.number('V.id', { id: true }),
+                title: n.string('V.title'),
+                thumbnail: n.string('V.thumbnail'),
+                url: n.string('V.url'),
+                created_at: n.date('V.created_at'),
+                updated_at: n.date('V.updated_at')
+              })),
+              creator: n.type({
+                id: n.number('U.id', { id: true }),
+                name: n.string('U.name'),
+                email: n.string('U.email'),
+                picture: n.string('U.picture'),
+                phone: n.string('U.phone')
+              }),
+              created_at: n.date('R.created_at'),
+              updated_at: n.date('R.updated_at')
+            })
+          )
+            .withQuery(
+              knex('recipes as R')
+                .leftOuterJoin('users as U', 'R.creator_id', 'U.id')
+                .leftOuterJoin('videos as V', 'R.id', 'V.recipe_id')
+                .orderBy(`${queryParams?.orderBy ? `R.${queryParams?.orderBy}` : 'R.id'}`, `${queryParams?.sortBy || 'desc'}`)
+                .limit(`${parseInt(queryParams?.limit) || 'NULL'}`)
+                .offset(`${Math.max(((parseInt(queryParams?.limit) || 10) * (parseInt(queryParams?.page) || 0)) - (parseInt(queryParams?.limit) || 10), 0)}`)
+            )
+
+          rowsWithoutLimit = await n.array(
+            n.type({
+              id: n.number('R.id', { id: true }),
+              title: n.string('R.title'),
+              ingredient: n.string('R.ingredient'),
+              category: n.string('R.category'),
+              thumbnail: n.string('R.thumbnail'),
+              videos: n.array(n.type({
+                id: n.number('V.id', { id: true }),
+                title: n.string('V.title'),
+                thumbnail: n.string('V.thumbnail'),
+                url: n.string('V.url'),
+                created_at: n.date('V.created_at'),
+                updated_at: n.date('V.updated_at')
+              })),
+              creator: n.type({
+                id: n.number('U.id', { id: true }),
+                name: n.string('U.name'),
+                email: n.string('U.email'),
+                picture: n.string('U.picture'),
+                phone: n.string('U.phone')
+              }),
+              created_at: n.date('R.created_at'),
+              updated_at: n.date('R.updated_at')
+            })
+          )
+            .withQuery(
+              knex('recipes as R')
+                .leftOuterJoin('users as U', 'R.creator_id', 'U.id')
+                .leftOuterJoin('videos as V', 'R.id', 'V.recipe_id')
+                .orderBy(`${queryParams?.orderBy ? `R.${queryParams?.orderBy}` : 'R.id'}`, `${queryParams?.sortBy || 'desc'}`)
+            )
         }
       }
 
-      const recipeVideos = []
-      const recipeCreator = []
+      totalRows = rowsWithoutLimit.length
 
-      result.forEach(value => {
-        recipeVideos.push({
-          id: value.video_id,
-          title: value.video_title,
-          thumbnail: value.video_thumbnail,
-          url: value.video_url,
-          recipe_id: value.recipe_video_id,
-          created_at: value.video_created_at,
-          updated_at: value.video_updated_at
-        })
-
-        recipeCreator.push({
-          id: value.creator_id,
-          email: value.creator_email,
-          name: value.creator_name,
-          picture: value.creator_picture,
-          phone: value.creator_phone,
-          creator_id: value.recipe_creator_id
-        })
-
-        return value
-      })
-
-      const listOfRecipe = []
-      const mappingRecipe = result.map(value => {
-        return {
-          id: value.id,
-          title: value.title,
-          ingredient: value.ingredient,
-          category: value.category,
-          thumbnail: value.thumbnail,
-          created_at: value.created_at,
-          updated_at: value.updated_at,
-          videos: recipeVideos.filter(videoValue => videoValue.recipe_id === value.id),
-          creator: recipeCreator.filter(creatorValue => creatorValue.creator_id === value.creator_id)[0]
-        }
-      })
-
-      recipeVideos.forEach(value => {
-        delete value.recipe_id
-
-        return value
-      })
-
-      recipeCreator.forEach(value => {
-        delete value.creator_id
-
-        return value
-      })
-
-      const recipes = mappingRecipe.filter(value => {
-        const isDuplicate = listOfRecipe.includes(value.id)
-
-        if (!isDuplicate) {
-          listOfRecipe.push(value.id)
-
-          return true
-        }
-
-        return false
-      })
-
-      totalRows = recipes.length
-
-      const totalActiveRows = recipes.length
+      const totalActiveRows = result.length
       const sheets = Math.ceil(totalRows / (parseInt(queryParams?.limit) || 0))
-      const nextPage = (page, limit, total) => (total / limit) >= page ? (limit <= 0 ? false : page + 1) : false
+      const nextPage = (page, limit, total) => (total / limit) > page ? (limit <= 0 ? false : page + 1) : false
       const previousPage = (page) => page <= 1 ? false : page - 1
 
       const pagination = {
@@ -144,7 +233,7 @@ module.exports = {
       } = {
         redisKey: `recipes:${mappingKey(req.query)}`,
         redisData: {
-          data: result ? recipes : [],
+          data: result || [],
           pagination
         },
         cacheLife: REDIS_CACHE_LIFE
@@ -156,7 +245,7 @@ module.exports = {
         cacheLife
       )
 
-      return response(res, 200, result ? recipes : [], pagination)
+      return response(res, 200, result || [], pagination)
     } catch (error) {
       return response(res, error.status || 500, {
         message: error.message || error
