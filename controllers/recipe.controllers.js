@@ -120,7 +120,7 @@ module.exports = {
 
       const totalActiveRows = recipes.length
       const sheets = Math.ceil(totalRows / (parseInt(queryParams?.limit) || 0))
-      const nextPage = (page, limit, total) => (total / limit) > page ? (limit <= 0 ? false : page + 1) : false
+      const nextPage = (page, limit, total) => (total / limit) >= page ? (limit <= 0 ? false : page + 1) : false
       const previousPage = (page) => page <= 1 ? false : page - 1
 
       const pagination = {
